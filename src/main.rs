@@ -105,12 +105,64 @@ fn main() {
             println!("{} Debugging {}", "▶".blue(), target.bold());
             // TODO: Implement debugging
         }
-        Commands::Scan { action } => {
-            match action {
-                cli::commands::ScanCommands::Patterns { binary } => {
-                    println!("{} Scanning patterns in {}", "▶".blue(), binary.bold());
-                    // TODO: Implement pattern scanning
+        Commands::Scan { action } => match action {
+            cli::commands::ScanCommands::Patterns { binary, pattern } => {
+                let loader = match core::BinaryLoader::new(&binary) {
+                    Ok(l) => l,
+                    Err(e) => {
+                        eprintln!("{} Error loading binary: {}", "✘".red(), e);
+                        return;
+                    }
+                };
+
+                let analyzer = core::Analyzer::new(&loader);
+                match analyzer.scan_patterns(&pattern) {
+                    Ok(matches) => {
+                        println!(
+                            "{} Found {} matches for pattern {}",
+                            "✔".green(),
+                            matches.len(),
+                            pattern.bold()
+                        );
+                        for m in matches {
+                            println!("  {:#014x}", m);
+                        }
+                    }
+                    Err(e) => eprintln!("{} Scan error: {}", "✘".red(), e),
                 }
+            }
+        },
+        Commands::Report { binary, out } => {
+            let loader = match core::BinaryLoader::new(&binary) {
+                Ok(l) => l,
+                Err(e) => {
+                    eprintln!("{} Error loading binary: {}", "✘".red(), e);
+                    return;
+                }
+            };
+
+            let analyzer = core::Analyzer::new(&loader);
+            let result = match analyzer.analyze() {
+                Ok(r) => r,
+                Err(e) => {
+                    eprintln!("{} Error analyzing binary: {}", "✘".red(), e);
+                    return;
+                }
+            };
+
+            match serde_json::to_string_pretty(&result) {
+                Ok(json) => {
+                    if let Err(e) = std::fs::write(&out, json) {
+                        eprintln!("{} Error writing report to {}: {}", "✘".red(), out, e);
+                    } else {
+                        println!(
+                            "{} Report generated successfully: {}",
+                            "✔".green(),
+                            out.bold()
+                        );
+                    }
+                }
+                Err(e) => eprintln!("{} Error generating JSON: {}", "✘".red(), e),
             }
         }
     }

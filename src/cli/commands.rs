@@ -58,10 +58,22 @@ pub enum Commands {
         #[command(subcommand)]
         action: ScanCommands,
     },
+    /// Generate a comprehensive report
+    Report {
+        /// Path to the binary file
+        binary: String,
+        /// Output file path
+        #[arg(long, default_value = "report.json")]
+        out: String,
+    },
 }
 
 #[derive(Subcommand)]
 pub enum ScanCommands {
     /// Scan for specific patterns
-    Patterns { binary: String },
+    Patterns {
+        binary: String,
+        /// Hex pattern to search for (e.g., 4889e5)
+        pattern: String,
+    },
 }

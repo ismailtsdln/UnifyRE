@@ -1,5 +1,6 @@
 use crate::errors::Result;
 
+#[allow(dead_code)]
 pub trait DebuggerBackend {
     /// Attach to a running process
     fn attach(&mut self, pid: u32) -> Result<()>;
@@ -27,6 +28,7 @@ pub trait DebuggerBackend {
 }
 
 #[derive(Debug, Default)]
+#[allow(dead_code)]
 pub struct Registers {
     pub rip: u64,
     pub rax: u64,
@@ -40,6 +42,7 @@ pub struct Registers {
     // Add more registers as needed for specific architectures
 }
 
+#[allow(dead_code)]
 pub struct Debugger {
     backend: Box<dyn DebuggerBackend>,
 }
