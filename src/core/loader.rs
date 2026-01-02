@@ -1,5 +1,6 @@
+use crate::core::traits::BinaryProvider;
 use crate::errors::{Result, UnifyError};
-use object::{File, Object};
+use object::File;
 use std::fs;
 
 pub struct BinaryLoader {
@@ -16,21 +17,14 @@ impl BinaryLoader {
             data,
         })
     }
+}
 
-    pub fn parse(&self) -> Result<File<'_>> {
-        File::parse(&*self.data)
-            .map_err(|e| UnifyError::ParseError(format!("Failed to parse binary: {}", e)))
+impl BinaryProvider for BinaryLoader {
+    fn data(&self) -> &[u8] {
+        &self.data
     }
 
-    #[allow(dead_code)]
-    pub fn get_format_name(&self) -> Result<String> {
-        let file = self.parse()?;
-        Ok(format!("{:?}", file.format()))
-    }
-
-    #[allow(dead_code)]
-    pub fn get_arch_name(&self) -> Result<String> {
-        let file = self.parse()?;
-        Ok(format!("{:?}", file.architecture()))
+    fn source(&self) -> &str {
+        &self.path
     }
 }

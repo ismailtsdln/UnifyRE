@@ -5,6 +5,7 @@ mod formats;
 mod output;
 mod utils;
 
+use crate::core::traits::BinaryProvider;
 use clap::Parser;
 use cli::{Cli, Commands};
 use colored::*;

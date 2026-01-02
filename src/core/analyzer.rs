@@ -1,4 +1,4 @@
-use crate::core::loader::BinaryLoader;
+use crate::core::traits::BinaryProvider;
 use crate::errors::Result;
 use object::{Object, ObjectSection, ObjectSymbol};
 use serde::Serialize;
@@ -27,16 +27,16 @@ pub struct SymbolInfo {
 }
 
 pub struct Analyzer<'a> {
-    loader: &'a BinaryLoader,
+    provider: &'a dyn BinaryProvider,
 }
 
 impl<'a> Analyzer<'a> {
-    pub fn new(loader: &'a BinaryLoader) -> Self {
-        Self { loader }
+    pub fn new(provider: &'a dyn BinaryProvider) -> Self {
+        Self { provider }
     }
 
     pub fn analyze(&self) -> Result<AnalysisResult> {
-        let file = self.loader.parse()?;
+        let file = self.provider.parse()?;
 
         let sections = file
             .sections()
@@ -71,7 +71,7 @@ impl<'a> Analyzer<'a> {
         })?;
 
         let mut matches = Vec::new();
-        let data = &self.loader.data;
+        let data = self.provider.data();
 
         for i in 0..data.len().saturating_sub(pattern.len()) {
             if &data[i..i + pattern.len()] == pattern.as_slice() {
