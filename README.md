@@ -12,7 +12,22 @@ UnifyRE is a high-performance tool designed to unify static analysis, dynamic de
 - **Smart Intelligence**: Built-in Shannon entropy calculation and suspicious sequence detection (NOP sleds, etc.).
 - **Plugin System**: Dynamic loading of shared libraries for custom analysis logic.
 - **Headless Automation**: Orchestrate complex workflows using `.ure` scripts.
-- **Professional Reporting**: Standalone HTML dashboards with modern aesthetics.
+- **Standalone HTML Dashboards**: Professional reporting with modern aesthetics.
+
+## Phase 3 Highlights (Productization & Authority)
+
+- **Determinism**: Guaranteed reproducible results via stable address-based sorting.
+- **Binary Comparison**: Advanced `diff` engine for sections, symbols, and entropy.
+- **Trust Layer**: Built-in knowledge base (via `explain`) for technical deep-dives.
+- **Analysis Profiles**: Tailor heuristics for `malware`, `exploit`, or `audit` scenarios.
+
+## Breaking Changes Policy
+
+As UnifyRE approaches v1.0, we adhere to the following stability guarantees:
+1. **Semantic Versioning**: We use SEMVER for all releases.
+2. **CLI Stability**: CLI arguments and flags are considered stable in minor versions (1.x).
+3. **JSON Output**: The JSON schema is strictly versioned. Breaking changes will only occur in major releases.
+4. **Plugin ABI**: The internal trait system is currently in a "Locked" candidate state for v1.0.
 
 ## Advanced Usage
 

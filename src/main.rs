@@ -19,7 +19,12 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Analyze { binary, format, .. } => {
+        Commands::Analyze {
+            binary,
+            format,
+            profile,
+            ..
+        } => {
             let loader = match core::BinaryLoader::new(&binary) {
                 Ok(l) => l,
                 Err(e) => {
@@ -28,7 +33,7 @@ fn main() {
                 }
             };
 
-            let analyzer = core::Analyzer::new(&loader);
+            let analyzer = core::Analyzer::new(&loader, profile);
             let result = match analyzer.analyze() {
                 Ok(r) => r,
                 Err(e) => {
@@ -47,13 +52,14 @@ fn main() {
             binary1,
             binary2,
             format,
+            profile,
         } => {
             let loader1 = core::BinaryLoader::new(&binary1);
             let loader2 = core::BinaryLoader::new(&binary2);
 
             if let (Ok(l1), Ok(l2)) = (loader1, loader2) {
-                let analyzer1 = core::Analyzer::new(&l1);
-                let analyzer2 = core::Analyzer::new(&l2);
+                let analyzer1 = core::Analyzer::new(&l1, profile);
+                let analyzer2 = core::Analyzer::new(&l2, profile);
 
                 match (analyzer1.analyze(), analyzer2.analyze()) {
                     (Ok(res1), Ok(res2)) => {
@@ -156,7 +162,9 @@ fn main() {
                     }
                 };
 
-                let analyzer = core::Analyzer::new(&loader);
+                // Pattern scanning doesn't use the analyzer's profile logic yet
+                let analyzer =
+                    core::Analyzer::new(&loader, core::profiles::AnalysisProfile::Default);
                 match analyzer.scan_patterns(&pattern) {
                     Ok(matches) => {
                         println!(
@@ -173,7 +181,12 @@ fn main() {
                 }
             }
         },
-        Commands::Report { binary, out, html } => {
+        Commands::Report {
+            binary,
+            out,
+            html,
+            profile,
+        } => {
             let loader = match core::BinaryLoader::new(&binary) {
                 Ok(l) => l,
                 Err(e) => {
@@ -182,7 +195,7 @@ fn main() {
                 }
             };
 
-            let analyzer = core::Analyzer::new(&loader);
+            let analyzer = core::Analyzer::new(&loader, profile);
             let result = match analyzer.analyze() {
                 Ok(r) => r,
                 Err(e) => {
@@ -226,6 +239,24 @@ fn main() {
         Commands::Run { script, binary } => {
             if let Err(e) = core::scripting::ScriptEngine::run(script, &binary) {
                 eprintln!("{} Script error: {}", "✘".red(), e);
+            }
+        }
+        Commands::Explain { finding_id } => {
+            let engine = core::explanations::ExplanationEngine::new();
+            if let Some(exp) = engine.explain(&finding_id) {
+                println!(
+                    "\n{} {}",
+                    "🔍 Explanation for:".bold().cyan(),
+                    finding_id.bold().yellow()
+                );
+                println!("{} {}", "Title:".bold(), exp.title);
+                println!("{} {}", "Risk Level:".bold(), exp.risk_level.red());
+                println!("\n{}", "Description:".bold());
+                println!("{}", exp.description);
+                println!("\n{}", "Detection Method:".bold());
+                println!("{}", exp.detection_method);
+            } else {
+                println!("{} No explanation found for ID: {}", "✘".red(), finding_id);
             }
         }
     }

@@ -1,5 +1,5 @@
 use crate::errors::Result;
-use object::{Object, ObjectSection};
+use object::Object;
 
 pub struct ElfAnalyzer<'a> {
     file: &'a object::File<'a>,
@@ -18,14 +18,13 @@ impl<'a> ElfAnalyzer<'a> {
                 "type".to_string(),
                 serde_json::Value::String("ELF".to_string()),
             );
-
-            let mut sections = Vec::new();
-            for section in self.file.sections() {
-                sections.push(section.name().unwrap_or_default().to_string());
-            }
             obj.insert(
-                "sections_count".to_string(),
-                serde_json::Value::Number(sections.len().into()),
+                "section_count".to_string(),
+                serde_json::Value::Number(self.file.sections().count().into()),
+            );
+            obj.insert(
+                "symbol_count".to_string(),
+                serde_json::Value::Number(self.file.symbols().count().into()),
             );
         }
 

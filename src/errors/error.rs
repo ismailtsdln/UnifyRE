@@ -11,15 +11,18 @@ pub enum UnifyError {
     #[error("Unsupported architecture: {0}")]
     UnsupportedArch(String),
 
+    #[allow(dead_code)]
     #[error("Unsupported format: {0}")]
     UnsupportedFormat(String),
 
     #[error("Disassembly error: {0}")]
     DisasmError(String),
 
+    #[allow(dead_code)]
     #[error("Debugger error: {0}")]
     DebuggerError(String),
 
+    #[allow(dead_code)]
     #[error("Permission denied: {0}")]
     PermissionDenied(String),
 
@@ -29,6 +32,7 @@ pub enum UnifyError {
     #[error("Internal error: {0}")]
     Internal(String),
 
+    #[allow(dead_code)]
     #[error("Feature not implemented: {0}")]
     NotImplemented(String),
 }

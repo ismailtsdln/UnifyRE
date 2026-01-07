@@ -18,7 +18,14 @@ impl<'a> PeAnalyzer<'a> {
                 "type".to_string(),
                 serde_json::Value::String("PE".to_string()),
             );
-            // PE Specific logic here (e.g., Import Tables, Exports)
+            obj.insert(
+                "section_count".to_string(),
+                serde_json::Value::Number(self.file.sections().count().into()),
+            );
+            obj.insert(
+                "symbol_count".to_string(),
+                serde_json::Value::Number(self.file.symbols().count().into()),
+            );
         }
 
         Ok(metadata)

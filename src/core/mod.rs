@@ -5,11 +5,10 @@ pub mod disassembler;
 pub mod explanations;
 pub mod loader;
 pub mod plugins;
+pub mod profiles;
 pub mod scripting;
 pub mod traits;
 
 pub use analyzer::Analyzer;
-pub use debugger::Debugger;
 pub use disassembler::Disassembler;
 pub use loader::BinaryLoader;
-pub use traits::{AnalyzerComponent, BinaryProvider, InstructionDecoder};

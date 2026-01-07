@@ -33,6 +33,9 @@ pub enum Commands {
         /// Extract strings
         #[arg(long)]
         strings: bool,
+        /// Analysis profile (malware, exploit, audit, default)
+        #[arg(long, default_value = "default", value_enum)]
+        profile: crate::core::profiles::AnalysisProfile,
     },
     /// Compare two binaries
     Diff {
@@ -43,6 +46,9 @@ pub enum Commands {
         /// Output format (human, json)
         #[arg(long, default_value = "human")]
         format: String,
+        /// Analysis profile (malware, exploit, audit, default)
+        #[arg(long, default_value = "default", value_enum)]
+        profile: crate::core::profiles::AnalysisProfile,
     },
     /// Disassemble a binary
     Disasm {
@@ -85,6 +91,9 @@ pub enum Commands {
         /// Generate HTML report
         #[arg(long)]
         html: bool,
+        /// Analysis profile (malware, exploit, audit, default)
+        #[arg(long, default_value = "default")]
+        profile: crate::core::profiles::AnalysisProfile,
     },
     /// Run an automation script (.ure)
     Run {

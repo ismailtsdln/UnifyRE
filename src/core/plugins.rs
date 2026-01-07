@@ -3,6 +3,7 @@ use crate::errors::Result;
 use libloading::{Library, Symbol};
 use std::path::Path;
 
+#[allow(dead_code)]
 pub struct PluginManager {
     plugins: Vec<Box<dyn AnalyzerComponent>>,
     libraries: Vec<Library>,

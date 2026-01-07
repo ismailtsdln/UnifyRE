@@ -35,6 +35,16 @@ impl ExplanationEngine {
             },
         );
 
+        kb.insert(
+            "SUSPICIOUS_SECTION".to_string(),
+            Explanation {
+                title: "Suspicious Section Name Detected".to_string(),
+                description: "The binary contains sections with names commonly associated with packers or obfuscators (e.g., .packed, UPX, .aspack). This is a strong indicator that the binary is compressed or protected to hinder static analysis.".to_string(),
+                detection_method: "Matches internal section names against a curated list of known-bad or packer-specific strings.".to_string(),
+                risk_level: "Medium - High probability of packing.".to_string(),
+            },
+        );
+
         Self { kb }
     }
 

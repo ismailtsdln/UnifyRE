@@ -18,7 +18,14 @@ impl<'a> MachOAnalyzer<'a> {
                 "type".to_string(),
                 serde_json::Value::String("Mach-O".to_string()),
             );
-            // Mach-O Specific logic here
+            obj.insert(
+                "section_count".to_string(),
+                serde_json::Value::Number(self.file.sections().count().into()),
+            );
+            obj.insert(
+                "symbol_count".to_string(),
+                serde_json::Value::Number(self.file.symbols().count().into()),
+            );
         }
 
         Ok(metadata)
